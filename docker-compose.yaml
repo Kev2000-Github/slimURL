@@ -1,0 +1,66 @@
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: '${MONGO_USERNAME}'
+      MONGO_INITDB_ROOT_PASSWORD: '${MONGO_PASSWORD}'
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - appnet
+
+  mongoexpress:
+    image: mongo-express:latest
+    ports:
+      - '${MONGO_EXPRESS_PORT}:8081'
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: '${MONGO_USERNAME}'
+      ME_CONFIG_MONGODB_ADMINPASSWORD: '${MONGO_PASSWORD}'
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - appnet
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - appnet
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    ports:
+      - '${REDIS_COMMANDER_PORT}:8081'
+    environment:
+      REDIS_HOSTS: redis
+    depends_on:
+      - redis
+    networks:
+      - appnet
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: '${RABBITMQ_DEFAULT_USER}'
+      RABBITMQ_DEFAULT_PASS: '${RABBITMQ_DEFAULT_PASS}'
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - appnet
+
+volumes:
+  mongodb-data:
+  redis-data:
+  rabbitmq-data:
+
+networks:
+  appnet:
