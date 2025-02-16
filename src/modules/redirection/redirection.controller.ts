@@ -1,10 +1,10 @@
 import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LinkService } from '../link/link.service';
-import { ConfigService } from '@nestjs/config';
+import { API_VERSION } from 'src/utils/constants';
 
 @Controller({
-  version: '1',
+  version: API_VERSION,
 })
 export class RedirectionController {
   constructor(private readonly linkService: LinkService) {}

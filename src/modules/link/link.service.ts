@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Link } from 'src/modules/link/models/link';
+import { Link } from 'src/modules/link/domain/link';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { LinkRepository } from './repositories/link.repository';
 import { nanoid } from 'nanoid';
-import { SHORT_URL_LENGTH } from 'src/utils/constants';
+import { EXPIRY_TIME, SHORT_URL_LENGTH } from 'src/utils/constants';
 import { PageOptions } from 'src/utils/pagination';
+import { addDays } from 'date-fns';
 
 @Injectable()
 export class LinkService {
@@ -23,9 +24,12 @@ export class LinkService {
   }
 
   async create(link: CreateLinkDto): Promise<Link> {
+    const expiryDate = addDays(new Date(), EXPIRY_TIME);
+
     return this.linkRepository.create({
       originalURL: link.originalURL.trim(),
       shortURL: nanoid(SHORT_URL_LENGTH),
+      expiresAt: expiryDate,
     });
   }
 

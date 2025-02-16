@@ -1,21 +1,19 @@
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  Scope,
-  UnprocessableEntityException,
-} from '@nestjs/common';
-import { Link } from '../models/link';
-import { LinkMapper } from '../mappers/link.mapper';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
-import { PageOptions, paginate } from 'src/utils/pagination';
+import { PageOptions } from 'src/utils/pagination';
+import { Link } from '../domain/link';
+import { LinkMapper } from '../mappers/link.mapper';
+import { LinkEntity } from '../models/link';
+import { OmitBaseProps } from 'src/utils/types';
 
 @Injectable()
 export class LinkRepository {
-  constructor(@InjectModel(Link.name) private linkModel: PaginateModel<Link>) {}
+  constructor(
+    @InjectModel(LinkEntity.name) private linkModel: PaginateModel<LinkEntity>,
+  ) {}
 
-  async create(data: Omit<Link, 'id'>) {
+  async create(data: OmitBaseProps<Link>) {
     try {
       const newEntity = await this.linkModel.create(data);
       return LinkMapper.toDomain(newEntity);

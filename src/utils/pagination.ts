@@ -13,9 +13,14 @@ export const getPaginationOptions = (options: PageOptions) => {
 };
 
 export const paginate = <T>(mongoosePaginateResult: PaginateResult<T>) => {
+  let count: number = 0;
+  if (typeof mongoosePaginateResult.total === 'number') {
+    count = mongoosePaginateResult.total;
+  }
+
   return {
     items: mongoosePaginateResult.docs,
-    count: mongoosePaginateResult.total,
+    count,
     page: mongoosePaginateResult.page,
     total: mongoosePaginateResult.totalPages,
     hasPrevPage: mongoosePaginateResult.hasPrevPage,

@@ -7,15 +7,15 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { LinkService } from './link.service';
-import { Link } from 'src/modules/link/models/link';
+import { getPaginationOptions } from 'src/utils/pagination';
 import { CreateLinkDto } from './dto/create-link.dto';
-import { getPaginationOptions, PageOptions } from 'src/utils/pagination';
 import { FindAllLinksDto } from './dto/find-all-links.dto';
+import { LinkService } from './link.service';
+import { API_VERSION } from 'src/utils/constants';
 
 @Controller({
   path: 'link',
-  version: '1',
+  version: API_VERSION,
 })
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
@@ -24,7 +24,7 @@ export class LinkController {
   findAll(@Query() options: FindAllLinksDto) {
     const paginationOptions = getPaginationOptions(options);
 
-    return this.linkService.findAll(options);
+    return this.linkService.findAll(paginationOptions);
   }
 
   @Get(':id')
