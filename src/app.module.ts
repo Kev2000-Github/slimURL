@@ -7,6 +7,7 @@ import { LinkModule } from './modules/link/link.module';
 import { RedirectionModule } from './modules/redirection/redirection.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { createKeyv } from '@keyv/redis';
         };
       },
     }),
+    ScheduleModule.forRoot(),
     LinkModule,
     RedirectionModule,
   ],

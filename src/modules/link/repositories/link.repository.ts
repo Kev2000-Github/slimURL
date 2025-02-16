@@ -49,4 +49,12 @@ export class LinkRepository {
 
     return result ? LinkMapper.toDomain(result) : null;
   }
+
+  async deleteExpiredLinks() {
+    const result = await this.linkModel.deleteMany({
+      expiresAt: { $lt: new Date() },
+    });
+
+    return result.deletedCount;
+  }
 }

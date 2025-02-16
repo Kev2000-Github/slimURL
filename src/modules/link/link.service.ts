@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid';
 import { EXPIRY_TIME, SHORT_URL_LENGTH } from 'src/utils/constants';
 import { PageOptions } from 'src/utils/pagination';
 import { addDays } from 'date-fns';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class LinkService {
@@ -36,5 +37,14 @@ export class LinkService {
 
   async delete(id: string) {
     return this.linkRepository.delete(id);
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS, { name: 'deleteExpiredLinks' })
+  async deleteExpiredLinks() {
+    const deletedCount = await this.linkRepository.deleteExpiredLinks();
+
+    return {
+      message: `Number of expired Links deleted: ${deletedCount}`,
+    };
   }
 }
