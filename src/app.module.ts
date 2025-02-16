@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LinkModule } from './modules/link/link.module';
 import { RedirectionModule } from './modules/redirection/redirection.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { createKeyv } from '@keyv/redis';
 
 @Module({
   imports: [
@@ -21,6 +23,17 @@ import { RedirectionModule } from './modules/redirection/redirection.module';
           password: configService.get('MONGO_PASSWORD'),
         },
       }),
+    }),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      isGlobal: true,
+      useFactory: async (configService: ConfigService) => {
+        return {
+          stores: [createKeyv(configService.getOrThrow('REDIS_URL'))],
+          ttl: configService.getOrThrow('REDIS_TTL'),
+        };
+      },
     }),
     LinkModule,
     RedirectionModule,

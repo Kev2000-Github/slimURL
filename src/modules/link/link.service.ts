@@ -19,8 +19,9 @@ export class LinkService {
     return this.linkRepository.findOne(id);
   }
 
-  async findOneByShortURL(shortURL: string): Promise<Link> {
-    return this.linkRepository.findOneByShortURL(shortURL);
+  async findOriginalURLByShortURL(shortURL: string): Promise<string> {
+    const link = await this.linkRepository.findOneByShortURL(shortURL);
+    return link.originalURL;
   }
 
   async create(link: CreateLinkDto): Promise<Link> {
