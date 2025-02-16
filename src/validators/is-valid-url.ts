@@ -2,6 +2,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { isValidURL as isValidURLFunction } from '../utils/iv-valid-url';
 
 /**
  * Check if the provided http/https link is a valid url
@@ -9,12 +10,7 @@ import {
 @ValidatorConstraint({ name: 'isValidURL', async: false })
 export class isValidURL implements ValidatorConstraintInterface {
   validate(url: string) {
-    // Regular expression to validate HTTP/HTTPS URLs
-    const urlPattern =
-      /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*(\?[\/\w \.-=&]*)?(\#[\w \.-]*)?$/;
-
-    // Test the URL against the pattern
-    return urlPattern.test(url);
+    return isValidURLFunction(url);
   }
 
   defaultMessage() {

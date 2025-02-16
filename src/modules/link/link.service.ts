@@ -24,7 +24,7 @@ export class LinkService {
 
   async create(link: CreateLinkDto): Promise<Link> {
     return this.linkRepository.create({
-      originalURL: link.originalURL,
+      originalURL: link.originalURL.trim(),
       shortURL: nanoid(SHORT_URL_LENGTH),
     });
   }
